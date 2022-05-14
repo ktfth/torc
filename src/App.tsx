@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
+import './xterm.css';
 import './App.css';
+import { Terminal } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+let term;
+const fitAddon = new FitAddon();
+let terminalLoaded = false;
 
-export default App;
+export default class App extends React.Component {
+  componentDidMount() {
+    if (!terminalLoaded) {
+      term = new Terminal();
+      term.loadAddon(fitAddon);
+      const terminalEl = document.getElementById('terminal') as HTMLElement;
+      term.open(terminalEl);
+      term.write('Hello world\r\n');
+      term.write('This is a test\r\n');
+      fitAddon.fit();
+      terminalLoaded = true;
+    }
+  }
+
+  render() {
+    return (
+      <div id="terminal"></div>
+    );
+  }
+};
